@@ -1,5 +1,23 @@
 # Registro de validação
 
+## 3 de outubro de 2026 — treinamento ampliado do experimento 05 mínimo
+
+- Mantidas as sete células, a arquitetura de 4.833 parâmetros, as divisões oficiais, a semente 42 e o limiar 0,5. Limite ampliado de 5 para 30 épocas; Adam com taxa inicial explícita de 0,001; EarlyStopping pela AUC de validação com paciência 5 e restauração dos melhores pesos; ReduceLROnPlateau pela mesma métrica, fator 0,5, paciência 2 e mínimo 0,00001. Notebook, gerador e enunciados Markdown/Word atualizados.
+- O ajuste foi conferido primeiro usando apenas treino e validação. Na mesma execução local, a AUC de validação passou de 0,8369 na época 5 para 0,9454 na época 30; a perda de validação caiu de 0,4688 para 0,2661. A taxa foi reduzida ao fim das épocas 24 e 26. O limite de 30 foi atingido, sem parada antecipada; isso não demonstra convergência. A restauração dos pesos foi conferida pela reavaliação da AUC de validação.
+- Após fixar a configuração, executadas as sete células e o exercício adicional de Grad-CAM em CPU, com o mesmo ambiente descrito abaixo. No teste: VN=142, FP=92, FN=22 e VP=368; acurácia=0,817, sensibilidade=0,944, especificidade=0,607 e ROC-AUC=0,919. Não houve ajuste posterior pelo teste. Resultados podem variar com hardware e versões.
+- Conferidos mapas finitos em [0, 1], dimensões 64 × 64, geração reproduzível do notebook e integridade/conteúdo atualizado do Word. `python scripts/validate_notebooks.py`: 13 notebooks aprovados; `nbformat.validate` e `git diff --check` aprovados. Notebook salvo sem saídas. Execução local, sem nova validação na interface do Colab.
+
+## 3 de outubro de 2026 — experimento 05 e versão mínima
+
+- Reexecutado integralmente `05_imagens_gradcam.ipynb`, com `FAST_MODE=True`, em CPU: treinamento, avaliação e quatro mapas Grad-CAM concluídos. No teste oficial: VN=13, FP=221, FN=17 e VP=373; acurácia=0,619 e ROC-AUC=0,744.
+- Criado `05_imagens_gradcam_versão_minima.ipynb`, com sete células de código, sem imports de `src/` ou clonagem do repositório. Usa os 4.708 exemplos de treino, 524 de validação e 624 de teste, com pixels em [0, 1], cinco épocas como limite e early stopping pela AUC de validação. Limiar fixado previamente em 0,5.
+- As sete células e a comparação adicional dos dois casos mais próximos de 0,5 foram executadas. Na versão mínima, a melhor época foi a quinta: VN=12, FP=222, FN=9 e VP=381; acurácia=0,630, sensibilidade=0,977, especificidade=0,051, precisão=0,632, F1=0,767 e ROC-AUC=0,799. A referência de sempre prever a classe majoritária do treino teve acurácia=0,625. Esses resultados evidenciam as limitações da CNN curta; não foi feita seleção de modelo ou limiar pelo teste.
+- Grad-CAM da versão mínima explica sempre o logit de pneumonia, inclusive em previsões normais. Conferidos formato 64 × 64, valores finitos em [0, 1] e equivalência numérica com o CAM calculado diretamente pelos pesos da camada linear após a média global, com tolerância absoluta de 1e-5. Corrigida a estrutura de entrada do modelo auxiliar para evitar aviso no Keras. Inspecionadas visualmente as curvas e uma figura com imagem, mapa e sobreposição.
+- Ambiente: Windows, CPU, Python 3.13.12, TensorFlow 2.21.0, MedMNIST 3.0.2, NumPy 2.4.3, pandas 2.3.3, Matplotlib 3.11.1, scikit-learn 1.9.0 e requests 2.32.5. A execução do TensorFlow precisou ocorrer fora do sandbox devido ao bloqueio de uma DLL pelo controle de aplicativo do Windows. Usado arquivo oficial já em cache, com checksum validado; não foi refeito o download nesta rodada.
+- `python -m pytest -q`: 18 testes aprovados; avisos sobre classe ausente em teste específico e permissão para o cache do pytest. `python scripts/validate_notebooks.py`: 13 notebooks aprovados, sem saídas versionadas. Novo notebook também aprovado em `nbformat.validate`; geração reproduzível conferida.
+- Enunciado em Markdown e Word com objetivos, cinco etapas, entrega e critérios. Verificados integridade do DOCX, seções, links locais e compatibilidade do gerador anterior da tarefa 3. A renderização das páginas no Word não foi verificada. Regeneração: `python scripts/create_task5_minimal.py` (requer `python-docx`).
+- Ainda depende de publicação na branch `main` para validar o botão Colab pela interface. A validação desta rodada foi local; não houve publicação.
+
 ## 17 de setembro de 2026 — regressão logística em grupos
 
 - Novo `extra_regressao_logistica_coracao.ipynb`: seis células executadas sequencialmente, com os dados Heart Disease baixados da UCI. Na conferência local, apenas a URL foi substituída pelo caminho do CSV baixado. Ambiente: Python 3.13.12, NumPy 2.4.3, pandas 2.3.3 e scikit-learn 1.9.0.
